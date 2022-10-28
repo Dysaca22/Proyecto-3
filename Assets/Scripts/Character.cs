@@ -1,59 +1,49 @@
+using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Character : MonoBehaviour
 {
     [Header("Principal")]
     public float life;
+    public int price;
+    public float speed;
+    public float range;
+    [Header("Attack")]
     public float damageAttack;
     public float timeAttack;
-    public float speed;
-    public int price;
-    [Header("Attack")]
-    public float range;
-    public float attackSpeed = 5f;
-    private float period = 0.0f;
     [Header("Shot")]
     public GameObject shot;
+    public float attackSpeed;
     [Header("Tower")]
     private GameObject tower;
-
     private Vector3 GetPosition => transform.position;
     private Quaternion lastRotation;
+    private float period = 0.0f;
 
     private void Awake()
     {
-        GameObject[] allTowers = GameObject.FindGameObjectsWithTag("Tower");
-        float minDistance = 9999f;
-        foreach (GameObject tower in allTowers)
-        {
-            if (Vector2.Distance(new Vector2(transform.position.x, transform.position.y), 
-                new Vector2(tower.transform.position.x, tower.transform.position.y)) < minDistance)
-            {
-                this.tower = tower;
-            }
-        }
+        transform.GetComponent<AIPath>().maxSpeed = speed;
+        FindTower();
+        transform.GetComponent<AIPath>().canMove = false;
+        transform.GetComponent<AIDestinationSetter>().target = tower.transform.GetChild(0).gameObject.transform;
     }
 
     private void FixedUpdate()
     {
         if (GameManager.Instance.is_play)
         {
-            if (GetPosition.y < 0.5)
+            FindTower();
+            if (tower != null)
             {
-                Move();
-            }
-            else
-            {
-                Rotate();
-                if (lastRotation == transform.rotation)
+                transform.GetComponent<AIDestinationSetter>().target = tower.transform.GetChild(0).gameObject.transform;
+                if (Vector2.Distance(tower.transform.position, GetPosition) < range)
                 {
-                    if (Vector2.Distance(transform.position, tower.transform.position) > range)
-                    {
-                        Move2();
-                    }
-                    else
+                    transform.GetComponent<AIPath>().canMove = false;
+                    Rotate();
+                    if (lastRotation == transform.rotation)
                     {
                         if (period > timeAttack)
                         {
@@ -63,13 +53,46 @@ public class Character : MonoBehaviour
                         period += Time.fixedDeltaTime;
                     }
                 }
+                else
+                {
+                    transform.GetComponent<AIPath>().canMove = true;
+                }
+            }
+            else
+            {
+                transform.GetComponent<AIPath>().canMove = false;
+                transform.GetComponent<AIDestinationSetter>().target = null;
             }
         }
     }
 
+    private void FindTower()
+    {
+        GameObject[] allTowers = { };
+        if (gameObject.tag != "Infanteria Killer")
+        {
+            GameObject[] allTowers1 = GameObject.FindGameObjectsWithTag("Torre Ligera");
+            allTowers = allTowers.Concat(allTowers1).ToArray();
+            GameObject[] allTowers2 = GameObject.FindGameObjectsWithTag("Torre Pesada");
+            allTowers = allTowers.Concat(allTowers2).ToArray();
+        }
+        GameObject[] allTowers3 = GameObject.FindGameObjectsWithTag("Torre Fuente de Poder");
+        allTowers = allTowers.Concat(allTowers3).ToArray();
+        float minDistance = 9999f;
+        foreach (GameObject tower in allTowers)
+        {
+            if (Vector2.Distance(tower.transform.position, transform.position) < minDistance)
+            {
+                minDistance = Vector2.Distance(tower.transform.position, transform.position);
+                this.tower = tower;
+            }
+        }
+    }
+
+
     public void Attack()
     {
-        if (range > 0)
+        if (range > 1)
         {
             GameObject firePoint = transform.GetChild(0).gameObject;
             Quaternion rotation = transform.rotation * Quaternion.Inverse(shot.transform.rotation);
@@ -78,26 +101,31 @@ public class Character : MonoBehaviour
             InstanceShot.GetComponent<Shot>().damage = damageAttack;
             Destroy(InstanceShot, 3);
         }
-    }
-
-    private void Move()
-    {
-        transform.position += new Vector3(0, 1, 0) * Time.fixedDeltaTime * speed;
-    }
-
-    private void Move2()
-    {
-        Vector2 direction = tower.transform.position - transform.position;
-        direction.Normalize();
-        float factor = Time.deltaTime * speed;
-        this.transform.Translate(direction.x * factor, direction.y * factor, GetPosition.z, Space.World);
+        else
+        {
+            tower.transform.GetComponent<Tower>().DecrementLife(damageAttack);
+        }
     }
 
     private void Rotate()
     {
         lastRotation = transform.rotation;
-        float angle = Mathf.Atan2(GetPosition.x - tower.transform.position.x,
-            GetPosition.y + tower.transform.position.y) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, angle), Time.deltaTime * 2.0f);
+        Vector3 vectorToTarget = tower.transform.position - transform.position;
+        float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg - 90;
+        Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * 1f);
+    }
+
+    public void DecrementLife(float damage)
+    {
+        if (life - damage >= 0)
+        {
+            life -= damage;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+            //ScenesManager.Instance.ChangeScene("StartMenu", ScenesManager.GameState.start, 0.5f);
+        }
     }
 }

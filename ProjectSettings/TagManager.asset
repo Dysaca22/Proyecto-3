@@ -4,7 +4,14 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Tower
+  - Infanteria Ligera
+  - Infanteria Pesada
+  - Infanteria Killer
+  - Torre Fuente de Poder
+  - Torre Pesada
+  - Torre Ligera
+  - Shot enemy
+  - Shot tower
   layers:
   - Default
   - TransparentFX
@@ -12,7 +19,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Obstacles
   - 
   - 
   - 

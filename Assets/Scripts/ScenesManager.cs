@@ -38,17 +38,17 @@ public class ScenesManager : MonoBehaviour
 
     public void PlayButtonClick()
     {
-        ChangeScene("Game", GameState.game);
+        ChangeScene("Game", GameState.game, 6f);
     }
 
-    public void ChangeScene(string name, GameState state)
+    public void ChangeScene(string name, GameState state, float time)
     {
-        StartCoroutine(TransitionToGame(name, state));
+        StartCoroutine(TransitionToGame(name, state, time));
     }
 
-    IEnumerator TransitionToGame(string name, GameState state)
+    IEnumerator TransitionToGame(string name, GameState state, float time)
     {
-        yield return new WaitForSeconds(6f);
+        yield return new WaitForSeconds(time);
         SceneManager.LoadScene(name);
         this.state = state;
     }

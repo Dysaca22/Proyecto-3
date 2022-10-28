@@ -8,10 +8,9 @@ public class GenerateCharacter : MonoBehaviour
     public void Generate(Transform gm)
     {
         int price = gm.GetComponent<Character>().price;
-        if (GameManager.Instance.budget - price >= 0)
+        if (GameManager.Instance.DecrementBudget(price))
         {
             Instantiate(gm, gm.transform.position, gm.transform.rotation, transformForlder);
-            GameManager.Instance.DecrementBudget(price);
         }
     }
 }
