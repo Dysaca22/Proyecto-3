@@ -193,9 +193,10 @@ MonoBehaviour:
   speed: 1
   range: 2
   damageAttack: 2
-  timeAttack: 0.5
+  timeAttack: 0.7
   shot: {fileID: 7620910130611226471, guid: 3b2e3afb8c5cef6408f0da95975c87ab, type: 3}
   attackSpeed: 2
+  onCollision: 0
 --- !u!114 &4602434672570058636
 MonoBehaviour:
   m_ObjectHideFlags: 0

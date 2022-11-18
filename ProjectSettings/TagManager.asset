@@ -12,6 +12,7 @@ TagManager:
   - Torre Ligera
   - Shot enemy
   - Shot tower
+  - GameManager
   layers:
   - Default
   - TransparentFX

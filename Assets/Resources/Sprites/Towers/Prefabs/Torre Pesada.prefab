@@ -95,7 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   life: 15
-  range: 2
+  range: 2.5
   price: 35
   damageAttack: 3
   shot: {fileID: 3820988311392038545, guid: 606b107a7248bda45a215db419da5faf, type: 3}

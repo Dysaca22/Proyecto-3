@@ -20,7 +20,7 @@ public class Tower : MonoBehaviour
     private GameObject enemy;
     private float period = 0.0f;
 
-    private void Update()
+    private void FixedUpdate()
     {
         GameObject[] allTowers = { };
         if (gameObject.tag != "Torre Fuente de Poder")

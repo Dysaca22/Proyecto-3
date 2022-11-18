@@ -165,6 +165,7 @@ MonoBehaviour:
   timeAttack: 0.5
   shot: {fileID: 0}
   attackSpeed: 2
+  onCollision: 0
 --- !u!114 &-8402914606918166376
 MonoBehaviour:
   m_ObjectHideFlags: 0

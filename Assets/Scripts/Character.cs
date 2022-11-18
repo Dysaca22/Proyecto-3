@@ -110,10 +110,17 @@ public class Character : MonoBehaviour
     private void Rotate()
     {
         lastRotation = transform.rotation;
-        Vector3 vectorToTarget = tower.transform.position - transform.position;
+        Vector3 diff = (tower.transform.GetChild(1).gameObject.transform.position - transform.position);
+        float angle = Mathf.Atan2(diff.y, diff.x);
+        transform.rotation = Quaternion.Euler(0f, 0f, angle * Mathf.Rad2Deg - 90);
+        /*
+        lastRotation = transform.rotation;
+        GameObject firePoint = transform.GetChild(0).gameObject;
+        Vector3 vectorToTarget = tower.transform.position - firePoint.transform.position;
         float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg - 90;
         Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-        transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * 1f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * 10f);
+        */
     }
 
     public void DecrementLife(float damage)
@@ -127,5 +134,17 @@ public class Character : MonoBehaviour
             Destroy(this.gameObject);
             //ScenesManager.Instance.ChangeScene("StartMenu", ScenesManager.GameState.start, 0.5f);
         }
+    }
+
+    public bool onCollision = false;
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        onCollision = true;
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        onCollision = false;
     }
 }

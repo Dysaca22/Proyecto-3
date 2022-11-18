@@ -105,14 +105,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b3aba5fadd24df4cada0ef461922b61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  life: 4
-  price: 10
+  life: 5
+  price: 15
   speed: 2
-  range: 2
+  range: 1.8
   damageAttack: 1
-  timeAttack: 0.5
+  timeAttack: 0.7
   shot: {fileID: 7620910130611226471, guid: 3b2e3afb8c5cef6408f0da95975c87ab, type: 3}
   attackSpeed: 2
+  onCollision: 0
 --- !u!114 &-9176000785565819154
 MonoBehaviour:
   m_ObjectHideFlags: 0
